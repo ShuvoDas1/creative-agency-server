@@ -43,6 +43,8 @@ client.connect(err => {
       const serviceName =  req.body.serviceName;
       const price = req.body.price;
       const productDetail = req.body.productDetail;
+      const serviceDescription = req.body.serviceDescription;
+      const serviceImage = req.body.serviceImg
       const filePath = `${__dirname}/orders/${file.name}`;
 
       file.mv(filePath,err =>{
@@ -55,10 +57,10 @@ client.connect(err => {
           const image = {
             contentType : req.files.file.mimetype,
             size: req.files.file.size,
-            img: Buffer(encodeImage,'base64')
+            img:  Buffer.from(encodeImage,'base64')
           }
 
-          ordersCollection.insertOne({name,email,price,productDetail,image,serviceName})
+          ordersCollection.insertOne({name,email,price,productDetail,image,serviceName,serviceDescription,serviceImage})
           .then(result =>{
             fs.remove(filePath,error =>{
              if(error){
@@ -77,10 +79,12 @@ client.connect(err => {
         })
     })
 
-    // app.get('/serviceListByEmail',(req,res)=>{
-    //   servicesCollection.find{{email:req.query.email}}
-    //   .toArray
-    // })
+    app.get('/serviceListByEmail',(req,res)=>{
+      ordersCollection.find({email:req.query.email})
+      .toArray((err,documents)=>{
+          res.send(documents);
+      })
+    })
 
     // app.post('/addServices',(req,res)=>{
     //     const services = req.body;
