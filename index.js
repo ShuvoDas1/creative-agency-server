@@ -47,12 +47,7 @@ client.connect(err => {
     const productDetail = req.body.productDetail;
     const serviceDescription = req.body.serviceDescription;
     const serviceImage = req.body.serviceImg
-    // const filePath = `${__dirname}/orders/${file.name}`;
 
-    // file.mv(filePath, err => {
-    //   if (err) {
-    //     res.status(500).send('failed to uplaod file')
-    //   }
     const newImage = file.data;
     const encodeImage = newImage.toString('base64')
 
@@ -114,10 +109,10 @@ client.connect(err => {
       img: Buffer.from(encodeImage, 'base64')
     }
 
-    servicesCollection.insertOne({ title, description, image })
+    servicesCollection.insertOne({ name, description, image })
       .then(result => {
 
-        res.send(result.insertedCount > 0);
+        res.send(result);
 
       })
 
