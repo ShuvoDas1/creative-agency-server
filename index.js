@@ -27,7 +27,7 @@ client.connect(err => {
   const servicesCollection = client.db("creativeAgency").collection("services");
   const ordersCollection = client.db("creativeAgency").collection("orders");
   const reviewsCollection = client.db("creativeAgency").collection("reviews");
-
+  const adminCollection = client.db("creativeAgency").collection("admin");
 
   app.get('/services', (req, res) => {
     // const services = req.body;
@@ -109,13 +109,19 @@ client.connect(err => {
       img: Buffer.from(encodeImage, 'base64')
     }
 
-    servicesCollection.insertOne({ name, description, image })
-      .then(result => {
 
-        res.send(result);
+  })
 
-      })
-
+  app.get('/admins', (req,res)=>{
+    // console.log(req.body)
+    adminCollection.find({})
+    .toArray((err, documents)=>{
+      if(err){
+        console.log(err)
+        res.status(500).send({message:'Something went wrong'})
+      }
+      res.status(200).send(documents)
+    })
   })
 
 
