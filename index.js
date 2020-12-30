@@ -47,6 +47,7 @@ client.connect(err => {
     const productDetail = req.body.productDetail;
     const serviceDescription = req.body.serviceDescription;
     const serviceImage = req.body.serviceImg
+    const status = req.body.status;
 
     const newImage = file.data;
     const encodeImage = newImage.toString('base64')
@@ -57,7 +58,7 @@ client.connect(err => {
       img: Buffer.from(encodeImage, 'base64')
     }
 
-    ordersCollection.insertOne({ name, email, price, productDetail, image, serviceName, serviceDescription, serviceImage })
+    ordersCollection.insertOne({ name, email, price, productDetail, image, serviceName, serviceDescription, serviceImage, status })
       .then(result => {
         res.send(result.insertedCount > 0)
       })
@@ -119,6 +120,17 @@ client.connect(err => {
       if(err){
         console.log(err)
         res.status(500).send({message:'Something went wrong'})
+      }
+      res.status(200).send(documents)
+    })
+  })
+
+
+  app.get('/allOrders', (req, res)=>{
+    ordersCollection.find({})
+    .toArray((err, documents)=>{
+      if(err){
+        res.status(500).send({message: 'Something went wrong'})
       }
       res.status(200).send(documents)
     })
