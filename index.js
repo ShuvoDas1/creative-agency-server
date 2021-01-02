@@ -60,7 +60,6 @@ client.connect(err => {
 
     ordersCollection.insertOne({ name, email, price, productDetail, image, serviceName, serviceDescription, serviceImage})
       .then(result => {
-        console.log(result)
         res.send(result.insertedCount > 0)
       })
   })
@@ -82,10 +81,23 @@ client.connect(err => {
   })
 
   app.post('/addReview', (req, res) => {
-    const review = req.body;
-    reviewsCollection.insertOne(review)
+    const file = req.files.image;
+    const name = req.body.name;
+    const companyName = req.body.companyName;
+    const description = req.body.description;
+
+    const newImg = file.data;
+    const encodeImg = newImg.toString('base64')
+
+    const image = {
+      contentType: file.mimetype,
+      size: file.size,
+      img: Buffer.from(encodeImg, 'base64')
+    }
+
+    reviewsCollection.insertOne({name, companyName, image, description})
       .then(result => {
-        res.send(result);
+        res.send(result.insertedCount > 0);
       })
   })
 
@@ -111,6 +123,10 @@ client.connect(err => {
       img: Buffer.from(encodeImage, 'base64')
     }
 
+    servicesCollection.insertOne({name, description, image})
+    .then(result =>{
+      res.send(result.insertedCount > 0)
+    })
 
   })
 
