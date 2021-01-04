@@ -153,6 +153,13 @@ client.connect(err => {
     })
   })
 
+  app.delete('/deleteOrder/:id',(req, res)=>{
+    ordersCollection.deleteOne({ _id: ObjectID(req.params.id) })
+    .then(result=>{
+      res.send(result.deletedCount > 0);
+    })
+  })
+
 
 });
 
